@@ -1,0 +1,26 @@
+version: '3'
+services:
+  # TODO: health check
+  db:
+    image: "codenotary/immudb:1.9DOM"
+    environment:
+      - IMMUDB_ADDRESS=0.0.0.0
+    ports:
+      - "3322:3322"
+  scanner:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    environment:
+      - HTTP_ADDRESS=${HTTP_ADDRESS}
+      - HTTP_MIDDLEWARE_RATELIMIT=${HTTP_MIDDLEWARE_RATELIMIT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - RISKPROVIDER_BLOCKMATE_APIKEY=${RISKPROVIDER_BLOCKMATE_APIKEY}
+    ports:
+      - "80:8000"
+    depends_on:
+      - db
